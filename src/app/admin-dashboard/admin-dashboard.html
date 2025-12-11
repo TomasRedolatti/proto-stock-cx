@@ -9,41 +9,33 @@
       <button (click)="cambiarSeccion('dashboard')" 
         [class]="currentSection === 'dashboard' ? 'bg-slate-800 text-emerald-400 border-l-4 border-emerald-500' : 'text-slate-400 hover:bg-slate-800 hover:text-white'"
         class="w-full text-left px-4 py-3 rounded transition-all flex items-center gap-3">
-        <i class="fa-solid fa-chart-line w-6 text-center"></i> Tablero de Control
+        <i class="fa-solid fa-chart-line w-6 text-center"></i> Tablero
       </button>
 
-      <button (click)="cambiarSeccion('ingresos')"
-        [class]="currentSection === 'ingresos' ? 'bg-slate-800 text-emerald-400 border-l-4 border-emerald-500' : 'text-slate-400 hover:bg-slate-800 hover:text-white'"
+      <button (click)="cambiarSeccion('stock')"
+        [class]="currentSection === 'stock' ? 'bg-slate-800 text-emerald-400 border-l-4 border-emerald-500' : 'text-slate-400 hover:bg-slate-800 hover:text-white'"
         class="w-full text-left px-4 py-3 rounded transition-all flex items-center gap-3">
-        <i class="fa-solid fa-box-open w-6 text-center"></i> Ingreso Stock
+        <i class="fa-solid fa-boxes-stacked w-6 text-center"></i> Gestión Stock
       </button>
 
-      <button (click)="cambiarSeccion('productos')"
-        [class]="currentSection === 'productos' ? 'bg-slate-800 text-emerald-400 border-l-4 border-emerald-500' : 'text-slate-400 hover:bg-slate-800 hover:text-white'"
+      <button (click)="cambiarSeccion('auditoria')"
+        [class]="currentSection === 'auditoria' ? 'bg-slate-800 text-emerald-400 border-l-4 border-emerald-500' : 'text-slate-400 hover:bg-slate-800 hover:text-white'"
         class="w-full text-left px-4 py-3 rounded transition-all flex items-center gap-3">
-        <i class="fa-solid fa-tags w-6 text-center"></i> Catálogo
+        <i class="fa-solid fa-list-check w-6 text-center"></i> Auditoría
       </button>
-
-      <div class="px-4 py-3 text-slate-600 flex items-center gap-3 cursor-not-allowed mt-4">
-        <i class="fa-solid fa-dollar-sign w-6 text-center"></i> Gestión Costos <span class="text-xs bg-slate-800 px-1 rounded">PROX</span>
-      </div>
     </nav>
-
-    <div class="p-4 bg-slate-950 text-xs text-slate-500 text-center">
-      v1.0.0 | Treelan Clinic
-    </div>
+    
+    <div class="p-4 bg-slate-950 text-xs text-slate-500 text-center">Tandil Clinic v1.2</div>
   </aside>
 
   <main class="flex-1 flex flex-col overflow-hidden">
     
     <header class="h-16 bg-white shadow-sm flex justify-between items-center px-8 border-b border-slate-200">
-      <h2 class="text-lg font-bold text-slate-700 uppercase tracking-wide">
-        {{ currentSection === 'dashboard' ? 'Visión General' : 'Gestión Operativa' }}
-      </h2>
+      <h2 class="text-lg font-bold text-slate-700 uppercase tracking-wide">{{ currentSection }}</h2>
       <div class="flex items-center gap-4">
-        <span class="text-sm text-slate-500">Hola, <span class="font-bold text-slate-800">{{ usuarioRol }}</span></span>
+        <span class="text-sm text-slate-500">Rol: <span class="font-bold text-slate-800">{{ usuarioRol }}</span></span>
         <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600">
-          <i class="fa-solid fa-user"></i>
+          <i class="fa-solid fa-user-doctor"></i>
         </div>
       </div>
     </header>
@@ -51,137 +43,155 @@
     <div class="flex-1 overflow-y-auto p-8">
 
       <div *ngIf="currentSection === 'dashboard'" class="space-y-8 animate-[fadeIn_0.5s]">
-        
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div *ngFor="let kpi of kpis" class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+          <div *ngFor="let kpi of kpis" class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
             <h3 class="text-slate-500 text-sm font-bold uppercase mb-2">{{ kpi.titulo }}</h3>
             <div class="flex items-end justify-between">
               <span class="text-4xl font-bold text-slate-800">{{ kpi.valor }}</span>
-              <span [class]="'text-sm font-bold px-2 py-1 rounded ' + (kpi.color === 'red' ? 'bg-red-100 text-red-600' : kpi.color === 'blue' ? 'bg-blue-100 text-blue-600' : 'bg-slate-100 text-slate-500')">
-                {{ kpi.cambio }}
-              </span>
+              <span class="text-sm font-bold px-2 py-1 rounded bg-slate-100 text-slate-500">{{ kpi.cambio }}</span>
             </div>
           </div>
         </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-            <h3 class="font-bold text-slate-700 mb-6">Consumos por Mes</h3>
-            <div class="h-48 flex items-end gap-4 px-2">
-              <div class="w-full bg-blue-100 h-[40%] rounded-t hover:bg-blue-200 relative group">
-                <span class="absolute -top-6 left-1/2 -translate-x-1/2 text-xs opacity-0 group-hover:opacity-100">Sep</span>
-              </div>
-              <div class="w-full bg-blue-100 h-[60%] rounded-t hover:bg-blue-200 relative group">
-                <span class="absolute -top-6 left-1/2 -translate-x-1/2 text-xs opacity-0 group-hover:opacity-100">Oct</span>
-              </div>
-              <div class="w-full bg-blue-500 h-[85%] rounded-t shadow-lg relative group">
-                 <span class="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-bold">Nov</span>
-              </div>
-            </div>
-            <p class="text-xs text-center text-slate-400 mt-2">Noviembre: Récord de cirugías</p>
-          </div>
-
-          <div class="bg-white p-0 rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-            <div class="p-4 border-b border-slate-100 bg-red-50 flex justify-between items-center">
-              <h3 class="font-bold text-red-800"><i class="fa-solid fa-triangle-exclamation mr-2"></i> Próximos a Vencer</h3>
-              <span class="text-xs font-bold text-red-600">Acción Requerida</span>
-            </div>
-            <table class="w-full text-sm text-left">
-              <thead class="bg-slate-50 text-slate-500 uppercase font-bold text-xs">
-                <tr>
-                  <th class="px-4 py-3">Producto</th>
-                  <th class="px-4 py-3">Lote</th>
-                  <th class="px-4 py-3 text-right">Vence en</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let item of alertasVencimiento" class="border-b border-slate-100 hover:bg-slate-50">
-                  <td class="px-4 py-3 font-medium">{{ item.producto }}</td>
-                  <td class="px-4 py-3 font-mono text-slate-500">{{ item.lote }}</td>
-                  <td class="px-4 py-3 text-right font-bold text-red-500">{{ item.dias }} días</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center text-blue-800">
+            <i class="fa-solid fa-info-circle mr-2"></i> El tablero muestra métricas en tiempo real de los 3 quirófanos.
+         </div>
       </div>
 
-      <div *ngIf="currentSection === 'ingresos'" class="space-y-6 animate-[fadeIn_0.5s]">
+      <div *ngIf="currentSection === 'stock'" class="space-y-6 animate-[fadeIn_0.5s]">
         
-        <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200 flex gap-4 items-end">
-          <div class="flex-1">
-            <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Escanear Código (Caja o Unidad)</label>
-            <div class="relative">
-              <i class="fa-solid fa-barcode absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-              <input type="text" [(ngModel)]="nuevoItem.codigo" (keyup.enter)="escanearProducto()"
-                class="w-full pl-10 pr-4 py-3 border-2 border-slate-300 rounded-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none font-mono text-lg" 
-                placeholder="Escanee aquí..." autofocus>
-            </div>
+        <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+          <div>
+            <h3 class="font-bold text-lg">Movimientos de Inventario</h3>
+            <p class="text-slate-400 text-sm">Registre entradas de proveedores o salidas manuales.</p>
           </div>
-          <button (click)="escanearProducto()" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 shadow-md shadow-blue-200">
-            AGREGAR
-          </button>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-          <table class="w-full text-left">
-            <thead class="bg-slate-50 text-slate-500 uppercase font-bold text-xs border-b border-slate-200">
-              <tr>
-                <th class="px-6 py-4">Producto Detectado</th>
-                <th class="px-6 py-4 w-32">Lote</th>
-                <th class="px-6 py-4 w-32">Vencimiento</th>
-                <th class="px-6 py-4 w-24">Cant.</th>
-                <th class="px-6 py-4 text-center">¿Es Caja?</th>
-                <th class="px-6 py-4 text-right">Total Unid.</th>
-                <th class="px-6 py-4"></th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-100">
-              <tr *ngFor="let item of listaIngreso" class="group hover:bg-slate-50">
-                <td class="px-6 py-3">
-                  <span class="font-bold text-slate-700">{{ item.nombre }}</span>
-                  <div class="text-xs text-slate-400">Factor x{{ item.factor }}</div>
-                </td>
-                <td class="px-6 py-3">
-                  <input type="text" [(ngModel)]="item.lote" placeholder="VT..." 
-                    class="w-full p-2 border border-slate-300 rounded text-sm focus:border-blue-500 outline-none uppercase font-mono">
-                </td>
-                <td class="px-6 py-3">
-                  <input type="date" [(ngModel)]="item.vencimiento" 
-                    class="w-full p-2 border border-slate-300 rounded text-sm focus:border-blue-500 outline-none">
-                </td>
-                <td class="px-6 py-3">
-                  <input type="number" [(ngModel)]="item.cantidad" min="1"
-                    class="w-full p-2 border border-slate-300 rounded text-sm text-center font-bold focus:border-blue-500 outline-none">
-                </td>
-                <td class="px-6 py-3 text-center">
-                  <input type="checkbox" [(ngModel)]="item.esCaja" class="w-5 h-5 text-blue-600 rounded cursor-pointer">
-                </td>
-                <td class="px-6 py-3 text-right font-bold text-emerald-600 text-lg">
-                  {{ calcularTotalUnidades(item) }}
-                </td>
-                <td class="px-6 py-3 text-right">
-                  <button class="text-slate-300 hover:text-red-500 p-2"><i class="fa-solid fa-trash"></i></button>
-                </td>
-              </tr>
-              
-              <tr *ngIf="listaIngreso.length === 0">
-                <td colspan="7" class="py-12 text-center text-slate-400">
-                  <i class="fa-solid fa-arrow-up mb-2 text-2xl"></i>
-                  <p>Escanee productos para armar el remito de ingreso.</p>
-                </td>
-              </tr>
-            </tbody>
-          </table>
           
-          <div class="bg-slate-50 p-4 border-t border-slate-200 flex justify-end gap-4" *ngIf="listaIngreso.length > 0">
-            <button class="px-6 py-3 text-slate-500 font-bold hover:bg-slate-200 rounded-lg">CANCELAR</button>
-            <button (click)="guardarIngreso()" class="px-8 py-3 bg-emerald-500 text-white font-bold rounded-lg shadow-lg shadow-emerald-200 hover:bg-emerald-600 flex items-center gap-2">
-              <i class="fa-solid fa-save"></i> GUARDAR EN STOCK
+          <div class="flex bg-slate-100 p-1 rounded-lg border border-slate-200">
+            <button (click)="tipoMovimiento = 'ingreso'" 
+              [class]="tipoMovimiento === 'ingreso' ? 'bg-emerald-500 text-white shadow-md' : 'text-slate-500 hover:bg-slate-200'"
+              class="px-6 py-2 rounded-md font-bold transition-all flex items-center gap-2">
+              <i class="fa-solid fa-arrow-down"></i> INGRESO
+            </button>
+            <button (click)="tipoMovimiento = 'salida'" 
+              [class]="tipoMovimiento === 'salida' ? 'bg-amber-500 text-white shadow-md' : 'text-slate-500 hover:bg-slate-200'"
+              class="px-6 py-2 rounded-md font-bold transition-all flex items-center gap-2">
+              <i class="fa-solid fa-arrow-up"></i> SALIDA
             </button>
           </div>
         </div>
 
+        <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 flex gap-4 items-end"
+             [ngClass]="tipoMovimiento === 'ingreso' ? 'border-emerald-500' : 'border-amber-500'">
+          
+          <div class="flex-1">
+            <label class="block text-xs font-bold text-slate-400 uppercase mb-1">
+              {{ tipoMovimiento === 'ingreso' ? 'Escanear Producto a Ingresar' : 'Escanear Producto a Consumir' }}
+            </label>
+            <div class="relative">
+              <i class="fa-solid fa-barcode absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+              <input type="text" [(ngModel)]="nuevoItem.codigo" (keyup.enter)="escanearProducto()"
+                class="w-full pl-10 pr-4 py-3 border-2 border-slate-300 rounded-lg focus:border-blue-500 outline-none font-mono text-lg" 
+                placeholder="Código de barra..." autofocus>
+            </div>
+          </div>
+          
+          <div *ngIf="tipoMovimiento === 'salida'" class="w-64">
+             <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Destino / Motivo</label>
+             <select [(ngModel)]="destinoSalida" class="w-full py-3 px-3 border-2 border-slate-300 rounded-lg bg-white">
+                <option>Quirófano 1</option>
+                <option>Quirófano 2</option>
+                <option>Quirófano 3</option>
+                <option>Descarte / Vencido</option>
+                <option>Préstamo</option>
+             </select>
+          </div>
+
+          <button (click)="escanearProducto()" 
+             [class]="tipoMovimiento === 'ingreso' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-amber-600 hover:bg-amber-700'"
+             class="text-white px-8 py-3 rounded-lg font-bold shadow-md transition-colors">
+            {{ tipoMovimiento === 'ingreso' ? 'AGREGAR' : 'CONSUMIR' }}
+          </button>
+        </div>
+
+        <div *ngIf="listaMovimiento.length > 0" class="bg-white rounded-xl shadow border border-slate-200 overflow-hidden">
+           <table class="w-full text-left">
+              <thead class="bg-slate-50 text-slate-500 uppercase font-bold text-xs">
+                 <tr>
+                    <th class="px-6 py-4">Producto</th>
+                    <th class="px-6 py-4">Cant.</th>
+                    <th class="px-6 py-4 text-center">¿Es Caja?</th>
+                    <th class="px-6 py-4 text-right">Total</th>
+                 </tr>
+              </thead>
+              <tbody>
+                 <tr *ngFor="let item of listaMovimiento" class="border-b border-slate-100">
+                    <td class="px-6 py-3 font-bold text-slate-700">{{ item.nombre }}</td>
+                    <td class="px-6 py-3 w-32">
+                       <input type="number" [(ngModel)]="item.cantidad" class="w-full p-1 border rounded text-center">
+                    </td>
+                    <td class="px-6 py-3 text-center">
+                       <input type="checkbox" [(ngModel)]="item.esCaja" class="w-5 h-5 accent-blue-600">
+                    </td>
+                    <td class="px-6 py-3 text-right font-bold text-lg" 
+                        [ngClass]="tipoMovimiento === 'ingreso' ? 'text-emerald-600' : 'text-amber-600'">
+                       {{ tipoMovimiento === 'ingreso' ? '+' : '-' }}{{ calcularTotalUnidades(item) }}
+                    </td>
+                 </tr>
+              </tbody>
+           </table>
+           <div class="p-4 bg-slate-50 flex justify-end">
+              <button (click)="guardarMovimiento()" class="bg-slate-800 text-white px-8 py-3 rounded-lg font-bold hover:bg-black shadow-lg">
+                 CONFIRMAR MOVIMIENTOS
+              </button>
+           </div>
+        </div>
+      </div>
+
+      <div *ngIf="currentSection === 'auditoria'" class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden animate-[fadeIn_0.5s]">
+        <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+           <div>
+              <h3 class="font-bold text-lg text-slate-800">Registro de Auditoría</h3>
+              <p class="text-sm text-slate-400">Trazabilidad completa de movimientos de usuario.</p>
+           </div>
+           <button class="text-blue-600 text-sm font-bold hover:underline"><i class="fa-solid fa-download"></i> Exportar CSV</button>
+        </div>
+
+        <table class="w-full text-left text-sm">
+           <thead class="bg-slate-50 text-slate-500 uppercase font-bold text-xs">
+              <tr>
+                 <th class="px-6 py-3">Fecha/Hora</th>
+                 <th class="px-6 py-3">Usuario</th>
+                 <th class="px-6 py-3">Acción</th>
+                 <th class="px-6 py-3">Detalle</th>
+                 <th class="px-6 py-3 text-right">Impacto</th>
+              </tr>
+           </thead>
+           <tbody class="divide-y divide-slate-100">
+              <tr *ngFor="let log of auditoriaLogs" class="hover:bg-slate-50 transition-colors">
+                 <td class="px-6 py-4 font-mono text-slate-500">{{ log.fecha }}</td>
+                 <td class="px-6 py-4 font-bold text-slate-700">
+                    <div class="flex items-center gap-2">
+                       <div class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-xs"><i class="fa-solid fa-user"></i></div>
+                       {{ log.usuario }}
+                    </div>
+                 </td>
+                 <td class="px-6 py-4">
+                    <span [ngClass]="{
+                       'bg-emerald-100 text-emerald-700': log.accion === 'INGRESO',
+                       'bg-blue-100 text-blue-700': log.accion === 'CONSUMO_QX',
+                       'bg-amber-100 text-amber-700': log.accion === 'AJUSTE_MANUAL',
+                       'bg-purple-100 text-purple-700': log.accion === 'ALTA_PRODUCTO'
+                    }" class="px-2 py-1 rounded text-xs font-bold border border-opacity-20">
+                       {{ log.accion }}
+                    </span>
+                 </td>
+                 <td class="px-6 py-4 text-slate-600">{{ log.detalle }}</td>
+                 <td class="px-6 py-4 text-right font-mono font-bold" 
+                     [ngClass]="log.impacto.includes('-') ? 'text-red-500' : 'text-emerald-500'">
+                    {{ log.impacto }}
+                 </td>
+              </tr>
+           </tbody>
+        </table>
       </div>
 
     </div>

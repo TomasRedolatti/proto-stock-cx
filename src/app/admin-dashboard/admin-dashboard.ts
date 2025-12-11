@@ -9,16 +9,19 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './admin-dashboard.html',
 })
 export class AdminComponent {
-  // Simulación de Usuario Logueado (Cambia esto para ver los efectos)
   usuarioRol: 'DIRECTOR' | 'OPERADOR' = 'OPERADOR'; 
+  currentSection: string = 'dashboard'; 
 
-  currentSection: string = 'dashboard'; // 'dashboard', 'ingresos', 'productos'
+  // --- CONFIGURACIÓN DE MOVIMIENTOS ---
+  // 'ingreso' = Sumar Stock | 'salida' = Restar Stock (Consumo Manual)
+  tipoMovimiento: 'ingreso' | 'salida' = 'ingreso'; 
+  destinoSalida: string = 'Farmacia Central'; // Para indicar a dónde se fue el insumo
 
-  // --- DATOS PARA DASHBOARD (DIRECTORES) ---
+  // --- DATOS MOCKUP ---
   kpis = [
     { titulo: 'Cirugías (Mes)', valor: '42', cambio: '+12%', color: 'blue' },
     { titulo: 'Items Críticos', valor: '5', cambio: 'Reponer ya', color: 'red' },
-    { titulo: 'Stock Valorizado', valor: '---', cambio: '(Próximamente)', color: 'gray' }, // Placeholder Costos
+    { titulo: 'Valor Stock', valor: '$ 4.2M', cambio: 'Estable', color: 'gray' },
   ];
 
   alertasVencimiento = [
@@ -26,46 +29,69 @@ export class AdminComponent {
     { producto: 'Vicryl 7-0', lote: 'B552', dias: 28 },
   ];
 
-  // --- DATOS PARA INGRESOS (OPERADORES) ---
-  // Esta lista simula lo que el usuario está cargando ahora mismo
-  listaIngreso: any[] = [];
-  nuevoItem: any = { codigo: '', cantidad: 1, esCaja: false };
+  // --- BITÁCORA DE AUDITORÍA (NUEVO) ---
+  auditoriaLogs = [
+    { fecha: '10/12 14:30', usuario: 'Farmacia', accion: 'INGRESO', detalle: '10 Cajas Viscoat (Lote VT719)', impacto: '+10' },
+    { fecha: '10/12 15:45', usuario: 'Dr. López', accion: 'CONSUMO_QX', detalle: 'Lente Alcon 22.0D en Q1', impacto: '-1' },
+    { fecha: '10/12 16:10', usuario: 'Instrumentación', accion: 'AJUSTE_MANUAL', detalle: 'Reposición Guantes M en Q2', impacto: '-100' },
+    { fecha: '10/12 09:00', usuario: 'Admin', accion: 'ALTA_PRODUCTO', detalle: 'Nuevo: IOL Master Kit', impacto: 'INFO' },
+  ];
 
-  // Diccionario simulado para reconocer productos al escribir el código
+  listaMovimiento: any[] = [];
+  nuevoItem: any = { codigo: '', cantidad: 1 };
+
   catalogo = [
     { ean: '7791234', nombre: 'Sutura Vicryl 7-0', unidadesPorCaja: 12 },
     { ean: '030065', nombre: 'Viscoelástico Viscoat', unidadesPorCaja: 1 },
+    { ean: '112233', nombre: 'Guantes Latex M (Caja x100)', unidadesPorCaja: 100 },
   ];
 
   cambiarSeccion(seccion: string) {
     this.currentSection = seccion;
   }
 
-  // Lógica: Al apretar ENTER en el código de barras
+  toggleTipoMovimiento() {
+    this.tipoMovimiento = this.tipoMovimiento === 'ingreso' ? 'salida' : 'ingreso';
+    this.listaMovimiento = []; // Limpiar lista al cambiar de modo para evitar confusiones
+  }
+
   escanearProducto() {
     const prod = this.catalogo.find(p => p.ean === this.nuevoItem.codigo);
     
     if (prod) {
-      // Si existe, lo agregamos a la tabla de pre-ingreso
-      this.listaIngreso.push({
+      this.listaMovimiento.push({
         nombre: prod.nombre,
-        lote: '', // A completar manual
-        vencimiento: '', // A completar manual
         cantidad: this.nuevoItem.cantidad,
-        esCaja: false, // Checkbox para multiplicar
+        esCaja: false, 
         factor: prod.unidadesPorCaja,
-        editando: true // Para que aparezca input abierto
+        lote: '', 
+        vencimiento: '' 
       });
-      this.nuevoItem.codigo = ''; // Limpiar para el siguiente
+      this.nuevoItem.codigo = ''; 
     } else {
-      alert('Producto nuevo. Se abriría modal de Alta de Producto.');
+      alert('Producto no encontrado en catálogo.');
     }
   }
 
-  guardarIngreso() {
-    // Aquí iría la llamada al Backend Java
-    alert('Stock actualizado correctamente.');
-    this.listaIngreso = [];
+  guardarMovimiento() {
+    // Simulación de guardar
+    const accion = this.tipoMovimiento === 'ingreso' ? 'INGRESO' : 'AJUSTE_MANUAL';
+    const impacto = this.tipoMovimiento === 'ingreso' ? '+' : '-';
+    
+    // Agregamos a la auditoría visualmente para la demo
+    this.listaMovimiento.forEach(item => {
+      const total = item.esCaja ? item.cantidad * item.factor : item.cantidad;
+      this.auditoriaLogs.unshift({
+        fecha: 'Ahora',
+        usuario: this.usuarioRol,
+        accion: accion,
+        detalle: `${item.nombre} (${this.destinoSalida})`,
+        impacto: `${impacto}${total}`
+      });
+    });
+
+    alert(`Movimiento de ${this.tipoMovimiento.toUpperCase()} registrado con éxito.`);
+    this.listaMovimiento = [];
   }
 
   calcularTotalUnidades(item: any): number {
