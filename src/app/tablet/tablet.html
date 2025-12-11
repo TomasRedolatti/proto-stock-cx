@@ -1,0 +1,267 @@
+<div class="min-h-screen bg-slate-100 text-slate-800 font-sans selection:bg-emerald-200">
+
+  <nav class="bg-white border-b border-slate-200 px-6 py-3 flex justify-between items-center sticky top-0 z-50 shadow-sm">
+    <div class="flex items-center gap-3">
+      <div class="bg-blue-600 text-white p-2 rounded-lg">
+        <i class="fa-solid fa-layer-group"></i>
+      </div>
+      <div>
+        <h1 class="font-bold text-lg leading-tight">Quirófano</h1>
+        <p class="text-xs text-slate-400">Sistema Integral de Stock</p>
+      </div>
+    </div>
+    
+    <div *ngIf="quirofanoId" class="flex items-center gap-4">
+      <div class="hidden md:block text-right">
+        <p class="text-sm font-bold text-slate-700">Dr. {{ cirujanoSeleccionado || 'Sin asignar' }}</p>
+        <p class="text-xs text-slate-500">{{ pacienteSeleccionado ? pacienteSeleccionado.nombre : 'Esperando paciente...' }}</p>
+      </div>
+      <div class="bg-slate-100 px-3 py-1 rounded-md border border-slate-200 font-mono font-bold text-blue-700">
+        {{ quirofanoId }}
+      </div>
+    </div>
+  </nav>
+
+  <div *ngIf="step === 1" class="flex h-[80vh] items-center justify-center p-4">
+    <div class="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full text-center border border-slate-200">
+      <div class="mb-6 bg-blue-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto text-blue-500 text-3xl">
+        <i class="fa-solid fa-tablet-screen-button"></i>
+      </div>
+      <h2 class="text-2xl font-bold mb-2">Configurar Dispositivo</h2>
+      <p class="text-slate-500 mb-8">Seleccione la ubicación física de esta tablet.</p>
+      
+      <div class="space-y-3">
+        <button (click)="setConfig('QUIRÓFANO 1')" class="w-full py-4 border-2 border-slate-100 rounded-xl font-bold text-slate-600 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700 transition-all">
+          QUIRÓFANO 1 (Central)
+        </button>
+        <button (click)="setConfig('QUIRÓFANO 2')" class="w-full py-4 border-2 border-slate-100 rounded-xl font-bold text-slate-600 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700 transition-all">
+          QUIRÓFANO 2
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="step === 2" class="max-w-4xl mx-auto p-6 mt-8">
+    <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+      <div class="bg-slate-50 px-8 py-6 border-b border-slate-100">
+        <h2 class="text-2xl font-bold text-slate-800">Iniciar Cirugía</h2>
+        <p class="text-slate-500">Valide los datos con el paciente presente</p>
+      </div>
+
+      <div class="p-8 space-y-8">
+        <div class="space-y-2 relative">
+          <label class="text-xs font-bold text-slate-400 uppercase tracking-widest">Paciente</label>
+          
+          <div *ngIf="!pacienteSeleccionado">
+            <input [(ngModel)]="busquedaPaciente" (keyup)="buscarPaciente()" type="text" 
+              class="w-full text-xl p-4 border-2 border-slate-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all placeholder:text-slate-300"
+              placeholder="Buscar por Apellido o HC...">
+            
+            <div *ngIf="pacientesFiltrados.length > 0" class="absolute w-full bg-white shadow-2xl rounded-xl mt-2 border border-slate-100 z-10 overflow-hidden">
+              <div *ngFor="let p of pacientesFiltrados" (click)="seleccionarPaciente(p)" 
+                   class="p-4 hover:bg-blue-50 cursor-pointer border-b border-slate-50 flex justify-between items-center group">
+                <div>
+                  <div class="font-bold text-lg group-hover:text-blue-700">{{ p.nombre }}</div>
+                  <div class="text-sm text-slate-400">HC: {{ p.hc }}</div>
+                </div>
+                <span class="bg-slate-100 text-slate-500 text-xs px-2 py-1 rounded">{{ p.os }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="pacienteSeleccionado" class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex justify-between items-center animate-[bounce_0.5s_ease-out]">
+            <div class="flex items-center gap-4">
+              <div class="bg-emerald-100 text-emerald-600 w-12 h-12 rounded-full flex items-center justify-center text-xl">
+                <i class="fa-solid fa-check"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-emerald-900 text-xl">{{ pacienteSeleccionado.nombre }}</h3>
+                <p class="text-emerald-700">HC: {{ pacienteSeleccionado.hc }} | {{ pacienteSeleccionado.os }}</p>
+              </div>
+            </div>
+            <button (click)="pacienteSeleccionado = null" class="text-slate-400 hover:text-red-500 px-4">
+              <i class="fa-solid fa-times"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-2">
+            <label class="text-xs font-bold text-slate-400 uppercase tracking-widest">Cirujano</label>
+            <select [(ngModel)]="cirujanoSeleccionado" class="w-full text-lg p-4 border-2 border-slate-200 rounded-xl bg-white outline-none focus:border-blue-500">
+              <option value="" disabled selected>Seleccionar...</option>
+              <option value="López Martínez">Dr. Scarfone Hugo</option>
+              <option value="García Ana">Dra. Rodriguez María Carolina</option>
+            </select>
+          </div>
+
+          <div class="space-y-2">
+            <label class="text-xs font-bold text-slate-400 uppercase tracking-widest">Ojo</label>
+            <div class="flex gap-2">
+              <button class="flex-1 py-4 rounded-xl border-2 font-bold transition-all" 
+                [ngClass]="ojoSeleccionado === 'OD' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-200 text-slate-400 hover:bg-slate-50'"
+                (click)="ojoSeleccionado = 'OD'">OD</button>
+              <button class="flex-1 py-4 rounded-xl border-2 font-bold transition-all"
+                [ngClass]="ojoSeleccionado === 'OI' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-200 text-slate-400 hover:bg-slate-50'"
+                (click)="ojoSeleccionado = 'OI'">OI</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-6 bg-slate-50 border-t border-slate-100">
+        <button (click)="iniciarCirugia()" 
+          [disabled]="!pacienteSeleccionado || !cirujanoSeleccionado"
+          class="w-full py-5 rounded-xl text-xl font-bold uppercase tracking-widest shadow-lg transition-all flex items-center justify-center gap-3 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none bg-emerald-500 hover:bg-emerald-600 text-white hover:-translate-y-1">
+          <i class="fa-solid fa-play"></i> Iniciar Cirugía
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="step === 3" class="h-[calc(100vh-70px)] flex flex-col relative">
+    
+    <div *ngIf="flashExito" class="absolute inset-0 z-50 bg-emerald-500/30 flex items-center justify-center pointer-events-none backdrop-blur-sm">
+      <div class="bg-white p-8 rounded-3xl shadow-2xl text-center animate-bounce">
+        <i class="fa-solid fa-circle-check text-6xl text-emerald-500 mb-4"></i>
+        <h2 class="text-3xl font-bold text-emerald-900">REGISTRADO</h2>
+      </div>
+    </div>
+
+    <div class="bg-slate-800 text-white p-6 pb-12 shadow-inner relative overflow-hidden shrink-0">
+      <div class="absolute -right-10 -top-10 text-slate-700 opacity-20 text-9xl">
+        <i class="fa-solid fa-barcode"></i>
+      </div>
+
+      <div class="max-w-4xl mx-auto flex justify-between items-end relative z-10">
+        <div>
+          <div class="flex items-center gap-3 mb-2 text-emerald-400">
+            <span class="animate-pulse">●</span> <span class="text-sm font-bold tracking-widest uppercase">Escuchando Lector</span>
+          </div>
+          <h2 class="text-3xl font-light">Escanee un insumo...</h2>
+        </div>
+        
+        <div *ngIf="ultimoEscaneo" class="bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-xl min-w-[300px] animate-[slideInRight_0.3s]">
+          <div class="text-xs text-slate-300 uppercase tracking-wider mb-1">Último Ingreso</div>
+          <div class="font-bold text-xl">{{ ultimoEscaneo.nombre }}</div>
+          <div class="text-emerald-300 text-sm"><i class="fa-solid fa-qrcode mr-1"></i> {{ ultimoEscaneo.detalle }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-1 bg-white relative -mt-6 rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden flex flex-col">
+      <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-white sticky top-0 z-10">
+        <h3 class="font-bold text-slate-500 uppercase tracking-wider text-sm">
+          Insumos Consumidos ({{ insumosConsumidos.length }})
+        </h3>
+        
+        <div class="flex gap-2 opacity-50 hover:opacity-100 transition-opacity">
+          <span class="text-xs self-center mr-2 text-slate-300 font-bold">[Botones DEMO]</span>
+          <button (click)="simularEscaneo('viscoat')" class="bg-slate-100 hover:bg-emerald-100 text-slate-600 px-3 py-1 rounded text-xs border border-slate-300">
+            + Viscoat
+          </button>
+          <button (click)="simularEscaneo('lente')" class="bg-slate-100 hover:bg-emerald-100 text-slate-600 px-3 py-1 rounded text-xs border border-slate-300">
+            + Lente
+          </button>
+          <button (click)="simularEscaneo('gasa')" class="bg-slate-100 hover:bg-blue-100 text-slate-600 px-3 py-1 rounded text-xs border border-slate-300">
+            + Gasa
+          </button>
+        </div>
+      </div>
+
+      <div class="overflow-y-auto flex-1 p-4 space-y-3 bg-slate-50">
+        
+        <div *ngIf="insumosConsumidos.length === 0" class="text-center py-20 text-slate-400">
+          <i class="fa-solid fa-box-open text-4xl mb-4 opacity-50"></i>
+          <p>No hay consumos registrados aún.</p>
+        </div>
+
+        <div *ngFor="let item of insumosConsumidos" class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between group hover:border-blue-300 transition-all">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full flex items-center justify-center text-xl"
+              [ngClass]="item.tipo === 'trazable' ? 'bg-purple-50 text-purple-600' : 'bg-slate-100 text-slate-500'">
+              <i [class]="item.tipo === 'trazable' ? 'fa-solid fa-qrcode' : 'fa-solid fa-box'"></i>
+            </div>
+            <div>
+              <div class="font-bold text-slate-800 text-lg">{{ item.nombre }}</div>
+              <div class="text-slate-500 text-sm font-mono">{{ item.detalle }}</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-6">
+            <span class="text-slate-400 font-mono text-sm">{{ item.hora }}</span>
+            <button (click)="eliminarInsumo(item.id)" class="w-10 h-10 rounded-full hover:bg-red-50 text-slate-300 hover:text-red-500 transition-colors">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="p-4 bg-white border-t border-slate-200 shadow-lg z-20">
+        <button (click)="finalizarCirugia()" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-red-200 transition-all text-lg flex justify-between px-8 items-center">
+          <span>FINALIZAR CIRUGÍA</span>
+          <span class="bg-red-700 px-3 py-1 rounded-lg text-sm">{{ insumosConsumidos.length }} Ítems</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="step === 4" class="flex h-[90vh] items-center justify-center p-4">
+    <div class="bg-white p-8 rounded-2xl shadow-xl max-w-lg w-full text-center border border-slate-200">
+      <div class="w-20 h-20 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">
+        <i class="fa-solid fa-clipboard-check"></i>
+      </div>
+      <h2 class="text-3xl font-bold text-slate-800 mb-2">Cirugía Finalizada</h2>
+      <p class="text-slate-500 mb-8">El stock se ha actualizado correctamente.</p>
+      
+      <div class="bg-slate-50 rounded-xl p-4 mb-8 text-left border border-slate-100">
+        <div class="flex justify-between mb-2 text-sm">
+          <span class="text-slate-500">Paciente:</span>
+          <span class="font-bold">{{ pacienteSeleccionado.nombre }}</span>
+        </div>
+        <div class="flex justify-between mb-2 text-sm">
+          <span class="text-slate-500">Total Insumos:</span>
+          <span class="font-bold">{{ insumosConsumidos.length }}</span>
+        </div>
+        <div class="flex justify-between text-sm">
+          <span class="text-slate-500">Estado:</span>
+          <span class="text-emerald-600 font-bold">Sincronizado</span>
+        </div>
+      </div>
+
+      <button (click)="reiniciar()" class="w-full py-4 border-2 border-slate-200 rounded-xl font-bold text-slate-600 hover:bg-slate-50 hover:text-slate-800 transition-all">
+        Volver al Inicio
+      </button>
+    </div>
+  </div>
+<div *ngIf="modalVisible" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" (click)="cerrarModal()"></div>
+
+    <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full relative z-10 overflow-hidden animate-[bounce_0.2s_ease-out]">
+      
+      <div class="bg-amber-50 p-6 flex justify-center">
+        <div class="bg-amber-100 text-amber-500 w-16 h-16 rounded-full flex items-center justify-center text-3xl">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+      </div>
+
+      <div class="px-6 py-4 text-center">
+        <h3 class="text-xl font-bold text-slate-800 mb-2">¿Devolver al Stock?</h3>
+        <p class="text-slate-500 text-sm">
+          El insumo se marcará como "no utilizado" y la cantidad volverá al inventario disponible.
+        </p>
+      </div>
+
+      <div class="flex border-t border-slate-100">
+        <button (click)="cerrarModal()" class="flex-1 py-4 text-slate-500 font-bold hover:bg-slate-50 transition-colors">
+          CANCELAR
+        </button>
+        <div class="w-[1px] bg-slate-100"></div>
+        <button (click)="confirmarDevolucion()" class="flex-1 py-4 text-red-500 font-bold hover:bg-red-50 transition-colors">
+          SÍ, DEVOLVER
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
