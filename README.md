@@ -1,59 +1,59 @@
-# ProtoStockCx
+# 🏥 COT Gestión - Módulo Quirófano
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.10.
+Live Demo: [AppWeb](https://stock-quirofano.netlify.app/)
+## 📋 Sobre el Proyecto
+COT Gestión es una solución integral para la administración de clínicas oftalmológicas. Este repositorio contiene el prototipo funcional del Módulo de Quirófano, diseñado específicamente para resolver la falta de trazabilidad y control de stock en entornos quirúrgicos de alta rotación.
 
-## Development server
+El objetivo de este MVP es validar el flujo de UX/UI para ser utilizado en Tablets montadas en pared dentro del área estéril, priorizando la velocidad, la legibilidad y la minimización de errores humanos.
 
-To start a local development server, run:
+## 💡 El Problema
 
-```bash
-ng serve
-```
+En un quirófano, el personal médico opera bajo estrés y con tiempos limitados. Los sistemas administrativos tradicionales (ERP de escritorio) fallan porque:
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+    
+* Requieren teclado y mouse (inviable con guantes).
 
-## Code scaffolding
+* Tienen interfaces densas y letras pequeñas.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## ✅ La Solución Propuesta
 
-```bash
-ng generate component component-name
-```
+Una Web App Progresiva (SPA) optimizada para tablets que actúa como "punto de venta" del insumo médico.
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+*  Zero-Click Interface: El sistema está siempre "escuchando" al lector de códigos de barras.
 
-```bash
-ng generate --help
-```
+* Feedback Visual: Alertas de color (Verde/Rojo) a pantalla completa para confirmar acciones sin necesidad de leer textos pequeños.
 
-## Building
+* Lógica Híbrida: Soporta tanto trazabilidad avanzada (DataMatrix GS1) para elementos específicos, como consumo masivo (FIFO) para descartables genéricos.
 
-To build the project run:
+## 🚀 Stack Tecnológico
 
-```bash
-ng build
-```
+Este prototipo fue construido utilizando Angular 18+:
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+* Framework: Angular (Standalone Components).
 
-## Running unit tests
+* State Management: Angular Signals (signal, computed, effect) para reactividad granular y sin Zone.js overhead.
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+* Styling: Tailwind CSS para un diseño utility-first, limpio y mantenible.
 
-```bash
-ng test
-```
+## ✨ Características Clave del Prototipo
+1. Simulación de Escaneo Inteligente
 
-## Running end-to-end tests
+Como no se dispone de lectores físicos en una demo web, el prototipo incluye una "Botonera de Demo" que simula la entrada de datos de una pistola lectora Zebra 2D.
 
-For end-to-end (e2e) testing, run:
+* Simulación DataMatrix: Inyecta un objeto complejo (Producto + Lote + Vencimiento).
 
-```bash
-ng e2e
-```
+* Simulación EAN-13: Inyecta un producto genérico y simula la lógica de descuento FIFO.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+2. Integración Legacy (Simulada)
 
-## Additional Resources
+Demostración de cómo el sistema convive con bases de datos antiguas (Legacy).
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+   * Buscador Predictivo: Permite buscar pacientes por Apellido o Historia Clínica (HC) simulando una API REST contra un sistema PHP antiguo.
+
+3. UX "Quirófano-First"
+
+* Botones de alto contraste y gran tamaño (Touch targets > 48px).
+
+* Modo "Listening" automático (Foco en inputs invisibles).
+
+* Prevención de errores mediante confirmaciones modales personalizadas.
